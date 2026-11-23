@@ -1,0 +1,36 @@
+services:
+  imadou:
+    image: ghcr.io/mmurasawa/kindleimadoudisplay:latest
+    container_name: imadou
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      TZ: Asia/Tokyo
+      PORT: "3000"
+      LOCATION_LABEL: "東京"
+      WEATHER_LAT: "35.6812"
+      WEATHER_LON: "139.7671"
+      AMESH_PIN_X: "62"
+      AMESH_PIN_Y: "43"
+      PRIMARY_LINES: "丸ノ内線,大江戸線"
+      DEPARTURE_ROUTES_JSON: '[{"id":"route1","from":"東京","to":"新宿","title":"東京 → 新宿","line":"中央線・丸ノ内線","color":"#e60012"}]'
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: imadou-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: Asia/Tokyo
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: "300"
