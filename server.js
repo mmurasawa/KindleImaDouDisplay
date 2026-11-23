@@ -61,14 +61,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/healthz', (req, res) => res.status(200).send('ok'));
 
 // ============================================================
-// 0. フロントエンド用設定
+// 0. フロントエンド用設定 & サーバー時刻（TrueNAS の NTP 同期時刻）
 // ============================================================
 app.get('/api/config', (req, res) => {
   res.json({
     locationLabel: LOCATION_LABEL,
     ameshPinX:     AMESH_PIN_X,
     ameshPinY:     AMESH_PIN_Y,
+    serverNowMs:   Date.now(),
   });
+});
+
+app.get('/api/time', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ nowMs: Date.now() });
 });
 
 // ============================================================

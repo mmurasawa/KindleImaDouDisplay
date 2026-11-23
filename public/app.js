@@ -37,6 +37,7 @@
   };
 
   var lastDeparturesData = null;
+  var clockOffsetMs = 0; // サーバー時刻 (NTP) と Kindle 本体時計の差分
 
   function pad2(n) {
     return (n < 10 ? '0' : '') + n;
@@ -48,7 +49,8 @@
 
   function getJson(url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
+    var sep = url.indexOf('?') === -1 ? '?' : '&';
+    xhr.open('GET', url + sep + '_t=' + new Date().getTime(), true);
     xhr.timeout = 12000;
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
@@ -81,22 +83,49 @@
       if (lbl && cfg.locationLabel) {
         lbl.textContent = '● ' + cfg.locationLabel;
       }
+      if (typeof cfg.serverNowMs === 'number') {
+        clockOffsetMs = cfg.serverNowMs - new Date().getTime();
+        updateClock();
+      }
     });
   }
 
+  function syncServerTime() {
+    getJson('/api/time', function (data) {
+      if (data && typeof data.nowMs === 'number') {
+        clockOffsetMs = data.nowMs - new Date().getTime();
+        updateClock();
+      }
+    });
+  }
+
+  // サーバー時刻 (NTP 同期) 基準で常に正確な日本時間 (JST = UTC+9) を返す
+  function getJstNow() {
+    var d = new Date(new Date().getTime() + clockOffsetMs + 9 * 60 * 60 * 1000);
+    return {
+      year:  d.getUTCFullYear(),
+      month: d.getUTCMonth() + 1,
+      date:  d.getUTCDate(),
+      day:   d.getUTCDay(),
+      hour:  d.getUTCHours(),
+      min:   d.getUTCMinutes(),
+      totalMin: d.getUTCHours() * 60 + d.getUTCMinutes()
+    };
+  }
+
   // ============================================================
-  // 時計（30秒ごとに更新・E-Ink 省電力）
+  // 時計（30秒ごとに更新・E-Ink 省電力・JST 固定）
   // ============================================================
   function updateClock() {
-    var now = new Date();
+    var now = getJstNow();
     var timeEl = byId('clock-time');
     var dateEl = byId('clock-date');
     if (timeEl) {
-      timeEl.textContent = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+      timeEl.textContent = pad2(now.hour) + ':' + pad2(now.min);
     }
     if (dateEl) {
       dateEl.textContent =
-        (now.getMonth() + 1) + '/' + now.getDate() + '(' + WEEKDAYS[now.getDay()] + ')';
+        now.month + '/' + now.date + '(' + WEEKDAYS[now.day] + ')';
     }
     if (lastDeparturesData) {
       renderDepartures(lastDeparturesData);
@@ -128,7 +157,7 @@
 
     var prob = '--';
     if (h && h.time && h.precipitation_probability) {
-      var nowHour = new Date().getHours();
+      var nowHour = getJstNow().hour;
       if (nowHour < h.precipitation_probability.length) {
         prob = h.precipitation_probability[nowHour];
       }
@@ -163,21 +192,12 @@
       return;
     }
 
-    var nowMs = new Date().getTime();
+    var jst = getJstNow();
+    var nowKey =
+      jst.year + '-' + pad2(jst.month) + '-' + pad2(jst.date) + 'T' + pad2(jst.hour) + ':' + pad2(jst.min);
     var startIdx = 0;
     for (var i = 0; i < h.time.length; i++) {
-      var tParts = h.time[i].split('T');
-      var dParts = tParts[0].split('-');
-      var hmParts = tParts[1].split(':');
-      var dt = new Date(
-        parseInt(dParts[0], 10),
-        parseInt(dParts[1], 10) - 1,
-        parseInt(dParts[2], 10),
-        parseInt(hmParts[0], 10),
-        parseInt(hmParts[1], 10),
-        0
-      );
-      if (dt.getTime() > nowMs) {
+      if (h.time[i] > nowKey) {
         startIdx = i;
         break;
       }
@@ -235,16 +255,9 @@
   function calcMinutesUntil(hhmm) {
     var parts = String(hhmm).split(':');
     if (parts.length !== 2) return null;
-    var now = new Date();
-    var target = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      parseInt(parts[0], 10),
-      parseInt(parts[1], 10),
-      0
-    );
-    var diff = Math.ceil((target.getTime() - now.getTime()) / 60000);
+    var jst = getJstNow();
+    var targetMin = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    var diff = targetMin - jst.totalMin;
     if (diff < -720) diff += 1440;
     return diff;
   }
@@ -417,8 +430,9 @@
       fetchDepartures();
       fetchAmesh();
     }, 60 * 1000);
-    // 天気 & 運行情報: 3分ごと
+    // 天気 & 運行情報 & サーバー時刻再同期: 3分ごと
     setInterval(function () {
+      syncServerTime();
       fetchWeather();
       fetchTrains();
     }, 3 * 60 * 1000);

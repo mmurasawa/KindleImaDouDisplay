@@ -13,22 +13,23 @@ html, body {
   background: #ffffff;
   color: #000000;
   font-family: "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans CJK JP", sans-serif;
-  line-height: 1.25;
+  line-height: 1.2;
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
 
 .page {
-  width: 588px;
+  width: 584px;
   margin: 0 auto;
-  padding: 6px 4px;
+  padding: 4px 4px 2px 4px;
 }
 
 /* 1. Header */
 .header-tbl {
   width: 100%;
   border-bottom: 3px solid #000000;
-  margin-bottom: 7px;
-  padding-bottom: 4px;
+  margin-bottom: 5px;
+  padding-bottom: 2px;
 }
 
 .hdr-left {
@@ -42,7 +43,7 @@ html, body {
 }
 
 .clock-time {
-  font-size: 40px;
+  font-size: 34px;
   font-weight: 700;
   color: #000000;
   letter-spacing: 0;
@@ -50,16 +51,16 @@ html, body {
 }
 
 .clock-date {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #000000;
 }
 
 .pill {
   display: inline-block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 3px 7px;
+  padding: 2px 6px;
   margin-right: 4px;
   border: 2px solid #000000;
   background: #ffffff;
@@ -73,9 +74,9 @@ html, body {
 
 .reload-btn {
   display: inline-block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border: 2px solid #000000;
   background: #ffffff;
   color: #000000;
@@ -85,8 +86,8 @@ html, body {
 /* 2. Rain Banner */
 .rain-banner {
   border: 3px solid #000000;
-  padding: 7px 10px;
-  margin-bottom: 7px;
+  padding: 5px 8px;
+  margin-bottom: 5px;
   background: #ffffff;
   color: #000000;
 }
@@ -98,34 +99,34 @@ html, body {
 
 .rain-state {
   display: block;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .rain-meta {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 /* 3. Amesh + Forecast */
 .weather-tbl {
   width: 100%;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
   table-layout: fixed;
 }
 
 .amesh-cell {
-  width: 344px;
+  width: 318px;
   vertical-align: top;
-  padding-right: 8px;
+  padding-right: 6px;
 }
 
 .amesh-stage {
   position: relative;
-  width: 336px;
-  height: 209px;
+  width: 312px;
+  height: 186px;
   border: 2px solid #000000;
   background: #ffffff;
   overflow: hidden;
@@ -183,16 +184,16 @@ html, body {
 .forecast-cell {
   vertical-align: top;
   border: 2px solid #000000;
-  padding: 5px 7px;
+  padding: 4px 6px;
   background: #ffffff;
 }
 
 .forecast-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   border-bottom: 2px solid #000000;
-  padding-bottom: 3px;
-  margin-bottom: 4px;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .fc-row-tbl {
@@ -201,9 +202,9 @@ html, body {
 }
 
 .fc-row-tbl td {
-  padding: 5px 2px;
+  padding: 4px 2px;
   border-bottom: 1px solid #999999;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -211,35 +212,35 @@ html, body {
   border-bottom: none;
 }
 
-.fc-c-time { width: 42px; }
+.fc-c-time { width: 40px; }
 .fc-c-icon { width: 44px; text-align: center; }
-.fc-c-temp { width: 46px; text-align: right; }
+.fc-c-temp { width: 44px; text-align: right; }
 .fc-c-prob { text-align: right; }
 
 .fc-empty {
   text-align: center;
   font-size: 13px;
-  padding: 20px 0;
+  padding: 16px 0;
 }
 
 /* 4. Departures */
 .dep-card {
   border: 2px solid #000000;
-  border-left: 7px solid #000000;
-  padding: 6px 8px;
-  margin-bottom: 7px;
+  border-left: 6px solid #000000;
+  padding: 4px 7px;
+  margin-bottom: 5px;
   background: #ffffff;
 }
 
 .dep-head-tbl {
   width: 100%;
   border-bottom: 2px solid #000000;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   padding-bottom: 2px;
 }
 
 .dep-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -263,35 +264,35 @@ html, body {
 }
 
 .dep-list-tbl td {
-  padding: 4px 3px;
+  padding: 2px 3px;
   vertical-align: middle;
 }
 
 .dep-c-time {
-  width: 78px;
-  font-size: 22px;
+  width: 70px;
+  font-size: 20px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .dep-row-sub .dep-c-time {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .dep-c-min {
-  width: 82px;
+  width: 76px;
   white-space: nowrap;
 }
 
 .min-badge {
   display: inline-block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border: 2px solid #000000;
   background: #ffffff;
   color: #000000;
-  min-width: 70px;
+  min-width: 64px;
   text-align: center;
 }
 
@@ -302,27 +303,27 @@ html, body {
 
 .dep-c-dest {
   text-align: right;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .dep-arr {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
 }
 
 .dep-placeholder {
   text-align: center;
-  padding: 12px;
-  font-size: 14px;
+  padding: 10px;
+  font-size: 13px;
 }
 
 /* 5. Other Trains / Delay Detail */
 .other-trains {
   border: 2px solid #000000;
-  padding: 6px 8px;
-  font-size: 13px;
+  padding: 4px 7px;
+  font-size: 12px;
   font-weight: 700;
   background: #ffffff;
   color: #000000;
