@@ -1,0 +1,62 @@
+replicaCount: 1
+
+image:
+  # GitHub Container Registry
+  repository: ghcr.io/mmurasawa/kindleimadoudisplay
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+env:
+  TZ: "Asia/Tokyo"
+  PORT: "3000"
+  # 対象地点（デフォルト: 東京駅周辺。自宅用は values.local.yaml で上書き）
+  LOCATION_LABEL: "東京"
+  WEATHER_LAT: "35.6812"
+  WEATHER_LON: "139.7671"
+  AMESH_PIN_X: "62"
+  AMESH_PIN_Y: "43"
+  PRIMARY_LINES: "丸ノ内線,大江戸線"
+  DEPARTURE_ROUTES_JSON: '[{"id":"route1","from":"東京","to":"新宿","title":"東京 → 新宿","line":"中央線・丸ノ内線","color":"#e60012"}]'
+
+service:
+  # 自宅 LAN から Kindle で直接 HTTP アクセスする場合は NodePort や LoadBalancer(MetalLB) が安定
+  # Tailscale Operator の LoadBalancer を使う場合:
+  #   type: LoadBalancer
+  #   loadBalancerClass: tailscale
+  #   annotations:
+  #     tailscale.com/hostname: imadou
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  loadBalancerClass: ""
+  annotations: {}
+
+ingress:
+  # Tailscale Kubernetes Operator の Ingress で公開する場合は enabled: true
+  enabled: false
+  className: "tailscale"
+  annotations: {}
+  hosts:
+    - host: imadou
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - imadou
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 192Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

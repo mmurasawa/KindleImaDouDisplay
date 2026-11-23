@@ -1,0 +1,507 @@
+/* ============================================================
+   Kindle 7th gen サイネージ スタイル（超軽量・高コントラスト版）
+   1024 x 600 固定 / アニメーション・外部フォントなし
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 1024px;
+  height: 600px;
+  overflow: hidden;
+  background: #000000;
+  color: #ffffff;
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans CJK JP", sans-serif;
+  line-height: 1.3;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.dashboard {
+  width: 1024px;
+  height: 600px;
+  padding: 10px 12px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+/* ============================================================
+   Header (62px)
+   ============================================================ */
+.header {
+  height: 62px;
+  padding: 0 4px 8px 4px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #2b3446;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.clock-block {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: baseline;
+  align-items: baseline;
+}
+
+.clock-time {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  margin-right: 14px;
+}
+
+.clock-date {
+  font-size: 22px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.header-right {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.primary-status-list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.status-pill {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-right: 8px;
+  border: 2px solid transparent;
+}
+
+.status-normal  { background: #0d2b1d; color: #34d399; border-color: #10b981; }
+.status-delay   { background: #382807; color: #fbbf24; border-color: #f59e0b; }
+.status-stopped { background: #3b0d0d; color: #f87171; border-color: #ef4444; }
+.status-partial { background: #381e07; color: #fb923c; border-color: #f97316; }
+.status-check   { background: #381e07; color: #fb923c; border-color: #f97316; }
+.status-unknown { background: #1e293b; color: #94a3b8; border-color: #475569; }
+
+.reload-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Main (2 Columns)
+   ============================================================ */
+.main {
+  -webkit-flex: 1;
+  flex: 1;
+  display: -webkit-flex;
+  display: flex;
+  min-height: 0;
+}
+
+.panel {
+  background: #101521;
+  border: 1px solid #2b3446;
+  border-radius: 8px;
+  padding: 12px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+/* Left Column: Rain + Amesh */
+.left-panel {
+  width: 424px;
+  margin-right: 12px;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.rain-banner {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #1a2234;
+  border: 2px solid #334155;
+  margin-bottom: 10px;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.rain-banner.is-dry {
+  background: #0c261b;
+  border-color: #10b981;
+}
+
+.rain-banner.is-raining {
+  background: #0c263b;
+  border-color: #38bdf8;
+}
+
+.rain-state {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.rain-banner.is-dry .rain-state     { color: #6ee7b7; }
+.rain-banner.is-raining .rain-state { color: #7dd3fc; }
+
+.rain-meta {
+  font-size: 15px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+/* Tokyo Amesh Map Box */
+.amesh-box {
+  margin-bottom: 10px;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.amesh-stage {
+  position: relative;
+  width: 398px;
+  height: 222px;
+  background: #0b1120;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.amesh-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 対象地点の位置マーカー (東京アメッシュ広域000上・JSから座標を反映) */
+.amesh-pin {
+  position: absolute;
+  left: 62%;
+  top: 43%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid #ffffff;
+}
+
+.amesh-err {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fbbf24;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 20px;
+  text-align: center;
+  line-height: 1.6;
+  padding-top: 85px;
+}
+
+.amesh-footer {
+  margin-top: 5px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Forecast Box */
+.forecast-box {
+  -webkit-flex: 1;
+  flex: 1;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+.forecast-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.forecast-row {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+.fc-item {
+  width: 75px;
+  background: #161d2d;
+  border: 1px solid #2e3a52;
+  border-radius: 6px;
+  padding: 6px 2px;
+  text-align: center;
+}
+
+.fc-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 3px;
+}
+
+.fc-icon {
+  font-size: 20px;
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+
+.fc-temp {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.fc-prob {
+  font-size: 13px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.fc-empty {
+  width: 100%;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 14px 0;
+}
+
+/* ============================================================
+   Right Column: Departures + Other Trains
+   ============================================================ */
+.right-panel {
+  -webkit-flex: 1;
+  flex: 1;
+  min-width: 0;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+.departures-wrap {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.dep-card {
+  background: #161d2d;
+  border: 1px solid #2e3a52;
+  border-left-width: 6px;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.dep-card-head {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-items: baseline;
+  align-items: baseline;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #2a3448;
+}
+
+.dep-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.dep-line {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.dep-row {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.dep-row:last-child {
+  margin-bottom: 0;
+}
+
+.dep-row.dep-first {
+  background: #1e2d44;
+  border: 1px solid #38bdf8;
+}
+
+.dep-left {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.dep-time {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  width: 88px;
+}
+
+.dep-row:not(.dep-first) .dep-time {
+  font-size: 21px;
+  color: #cbd5e1;
+}
+
+.dep-min {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: #0c4a6e;
+  color: #7dd3fc;
+  min-width: 78px;
+  text-align: center;
+}
+
+.dep-min.soon {
+  background: #78350f;
+  color: #fde047;
+}
+
+.dep-right {
+  text-align: right;
+  overflow: hidden;
+}
+
+.dep-dest {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+
+.dep-arr {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.dep-placeholder {
+  padding: 16px;
+  text-align: center;
+  font-size: 15px;
+  color: #94a3b8;
+}
+
+/* Other Metro / Toei Status Bar */
+.other-trains {
+  background: #161d2d;
+  border: 1px solid #2e3a52;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.other-trains.has-issue {
+  background: #331907;
+  border-color: #f59e0b;
+}
+
+.other-label {
+  font-weight: 700;
+  color: #94a3b8;
+  margin-right: 10px;
+  white-space: nowrap;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+.other-body {
+  font-weight: 700;
+  color: #34d399;
+  -webkit-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.other-trains.has-issue .other-body {
+  color: #fde047;
+}
+
+.issue-line {
+  margin-bottom: 3px;
+  line-height: 1.35;
+}
+
+.issue-line:last-child {
+  margin-bottom: 0;
+}
+
+.issue-name {
+  color: #fde047;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.issue-detail {
+  color: #fef3c7;
+  font-weight: 400;
+  font-size: 13px;
+}

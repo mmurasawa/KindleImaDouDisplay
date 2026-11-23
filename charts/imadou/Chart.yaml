@@ -1,0 +1,6 @@
+apiVersion: v2
+name: imadou
+description: Kindle Fire 7th gen lightweight signage dashboard (Tokyo Amesh + Weather + Train Departures/Status)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
