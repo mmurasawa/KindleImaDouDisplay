@@ -1,6 +1,6 @@
 /**
- * app.js — Kindle 7th gen サイネージ（超軽量・古いWebView完全互換版）
- * ES5 + XMLHttpRequest のみで実装（async/await, fetch, padStart 不使用）
+ * app.js — Kindle 7th gen (E-Ink 白黒・古い WebKit) 完全互換版
+ * ES5 + XMLHttpRequest のみで実装
  */
 
 (function () {
@@ -8,31 +8,32 @@
 
   var WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
+  // E-Ink で文字化けしない漢字ラベルを使用
   var WMO = {
-    0:  { icon: '☀',  text: '快晴',           rain: false },
-    1:  { icon: '☀',  text: '晴れ',           rain: false },
-    2:  { icon: '⛅', text: 'くもり時々晴れ', rain: false },
-    3:  { icon: '☁',  text: '曇り',           rain: false },
-    45: { icon: '☁',  text: '霧',             rain: false },
-    48: { icon: '☁',  text: '霧',             rain: false },
-    51: { icon: '☔', text: '弱い霧雨',       rain: true },
-    53: { icon: '☔', text: '霧雨',           rain: true },
-    55: { icon: '☔', text: '強い霧雨',       rain: true },
-    61: { icon: '☔', text: '小雨',           rain: true },
-    63: { icon: '☔', text: '雨',             rain: true },
-    65: { icon: '☔', text: '大雨',           rain: true },
-    71: { icon: '❄',  text: '小雪',           snow: true },
-    73: { icon: '❄',  text: '雪',             snow: true },
-    75: { icon: '❄',  text: '大雪',           snow: true },
-    77: { icon: '❄',  text: '霰',             snow: true },
-    80: { icon: '☔', text: 'にわか雨',       rain: true },
-    81: { icon: '☔', text: '強いにわか雨',   rain: true },
-    82: { icon: '☔', text: '激しいにわか雨', rain: true },
-    85: { icon: '❄',  text: 'にわか雪',       snow: true },
-    86: { icon: '❄',  text: '強いにわか雪',   snow: true },
-    95: { icon: '⚡', text: '雷雨',           rain: true },
-    96: { icon: '⚡', text: '雷雨',           rain: true },
-    99: { icon: '⚡', text: '激しい雷雨',     rain: true }
+    0:  { icon: '快晴', text: '快晴',           rain: false },
+    1:  { icon: '晴',   text: '晴れ',           rain: false },
+    2:  { icon: '晴曇', text: 'くもり時々晴れ', rain: false },
+    3:  { icon: '曇',   text: '曇り',           rain: false },
+    45: { icon: '霧',   text: '霧',             rain: false },
+    48: { icon: '霧',   text: '霧',             rain: false },
+    51: { icon: '霧雨', text: '弱い霧雨',       rain: true },
+    53: { icon: '霧雨', text: '霧雨',           rain: true },
+    55: { icon: '霧雨', text: '強い霧雨',       rain: true },
+    61: { icon: '小雨', text: '小雨',           rain: true },
+    63: { icon: '雨',   text: '雨',             rain: true },
+    65: { icon: '大雨', text: '大雨',           rain: true },
+    71: { icon: '小雪', text: '小雪',           snow: true },
+    73: { icon: '雪',   text: '雪',             snow: true },
+    75: { icon: '大雪', text: '大雪',           snow: true },
+    77: { icon: '霰',   text: '霰',             snow: true },
+    80: { icon: '雨',   text: 'にわか雨',       rain: true },
+    81: { icon: '強雨', text: '強いにわか雨',   rain: true },
+    82: { icon: '豪雨', text: '激しいにわか雨', rain: true },
+    85: { icon: '雪',   text: 'にわか雪',       snow: true },
+    86: { icon: '強雪', text: '強いにわか雪',   snow: true },
+    95: { icon: '雷雨', text: '雷雨',           rain: true },
+    96: { icon: '雷雨', text: '雷雨',           rain: true },
+    99: { icon: '雷雨', text: '激しい雷雨',     rain: true }
   };
 
   var lastDeparturesData = null;
@@ -53,8 +54,7 @@
       if (xhr.readyState !== 4) return;
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
-          var data = JSON.parse(xhr.responseText);
-          onSuccess(data);
+          onSuccess(JSON.parse(xhr.responseText));
         } catch (e) {
           if (onError) onError(e);
         }
@@ -62,17 +62,30 @@
         if (onError) onError(new Error('HTTP ' + xhr.status));
       }
     };
-    xhr.onerror = function () {
-      if (onError) onError(new Error('Network error'));
-    };
-    xhr.ontimeout = function () {
-      if (onError) onError(new Error('Timeout'));
-    };
+    xhr.onerror = function () { if (onError) onError(new Error('Network error')); };
+    xhr.ontimeout = function () { if (onError) onError(new Error('Timeout')); };
     xhr.send();
   }
 
   // ============================================================
-  // 時計（15秒ごとに更新・低負荷）
+  // 設定読み込み（地点名・アメッシュピン座標）
+  // ============================================================
+  function fetchConfig() {
+    getJson('/api/config', function (cfg) {
+      var pin = byId('amesh-pin');
+      var lbl = byId('amesh-pin-label');
+      if (pin) {
+        if (typeof cfg.ameshPinX === 'number') pin.style.left = cfg.ameshPinX + '%';
+        if (typeof cfg.ameshPinY === 'number') pin.style.top  = cfg.ameshPinY + '%';
+      }
+      if (lbl && cfg.locationLabel) {
+        lbl.textContent = '● ' + cfg.locationLabel;
+      }
+    });
+  }
+
+  // ============================================================
+  // 時計（30秒ごとに更新・E-Ink 省電力）
   // ============================================================
   function updateClock() {
     var now = new Date();
@@ -83,7 +96,7 @@
     }
     if (dateEl) {
       dateEl.textContent =
-        (now.getMonth() + 1) + '/' + now.getDate() + ' (' + WEEKDAYS[now.getDay()] + ')';
+        (now.getMonth() + 1) + '/' + now.getDate() + '(' + WEEKDAYS[now.getDay()] + ')';
     }
     if (lastDeparturesData) {
       renderDepartures(lastDeparturesData);
@@ -91,16 +104,14 @@
   }
 
   // ============================================================
-  // 天気・今の降水状況
+  // 天気・今の降水状況 & 2時間ごと予報
   // ============================================================
   function fetchWeather() {
     getJson('/api/weather', function (data) {
       renderWeather(data);
     }, function () {
-      var banner = byId('rain-banner');
       var stateEl = byId('rain-state');
       var metaEl  = byId('rain-meta');
-      if (banner)  banner.className = 'rain-banner';
       if (stateEl) stateEl.textContent = '天気を取得できません';
       if (metaEl)  metaEl.textContent  = '通信を確認してください';
     });
@@ -111,11 +122,10 @@
     var h = data && data.hourly;
     if (!c) return;
 
-    var info = WMO[c.weather_code] || { text: '不明', rain: false };
+    var info = WMO[c.weather_code] || { icon: '不明', text: '不明', rain: false };
     var precip = Number(c.precipitation || 0);
     var temp = Math.round(Number(c.temperature_2m || 0));
 
-    // 現在時刻に最も近い降水確率を取得
     var prob = '--';
     if (h && h.time && h.precipitation_probability) {
       var nowHour = new Date().getHours();
@@ -130,17 +140,17 @@
 
     if (info.snow) {
       banner.className = 'rain-banner is-raining';
-      stateEl.textContent = 'いま雪が降っています';
+      stateEl.textContent = '【雪】いま雪が降っています';
     } else if (precip > 0 || info.rain) {
       banner.className = 'rain-banner is-raining';
-      stateEl.textContent = 'いま雨が降っています';
+      stateEl.textContent = '【雨】いま雨が降っています';
     } else {
-      banner.className = 'rain-banner is-dry';
+      banner.className = 'rain-banner';
       stateEl.textContent = 'いま雨は降っていません';
     }
 
     metaEl.textContent =
-      temp + '℃  /  ' + info.text + '  /  降水量 ' + precip.toFixed(1) + 'mm (確率 ' + prob + '%)';
+      temp + '℃ / ' + info.text + ' / 降水量 ' + precip.toFixed(1) + 'mm (確率 ' + prob + '%)';
 
     renderForecast(h);
   }
@@ -156,7 +166,6 @@
     var nowMs = new Date().getTime();
     var startIdx = 0;
     for (var i = 0; i < h.time.length; i++) {
-      // "YYYY-MM-DDTHH:MM" をローカル時刻として解釈
       var tParts = h.time[i].split('T');
       var dParts = tParts[0].split('-');
       var hmParts = tParts[1].split(':');
@@ -174,24 +183,27 @@
       }
     }
 
-    var html = '';
+    var rowsHtml = '';
     var count = 0;
     for (var idx = startIdx + 1; idx < h.time.length && count < 5; idx += 2) {
-      var hr = h.time[idx].split('T')[1].slice(0, 2);
-      var w = WMO[h.weather_code[idx]] || { icon: '☁', text: '不明' };
+      var hr = parseInt(h.time[idx].split('T')[1].slice(0, 2), 10);
+      var w = WMO[h.weather_code[idx]] || { icon: '--' };
       var t = Math.round(Number(h.temperature_2m[idx]));
       var p = h.precipitation_probability[idx];
 
-      html +=
-        '<div class="fc-item">' +
-          '<div class="fc-time">' + parseInt(hr, 10) + '時</div>' +
-          '<div class="fc-icon">' + w.icon + '</div>' +
-          '<div class="fc-temp">' + t + '℃</div>' +
-          '<div class="fc-prob">' + p + '%</div>' +
-        '</div>';
+      rowsHtml +=
+        '<tr>' +
+          '<td class="fc-c-time">' + hr + '時</td>' +
+          '<td class="fc-c-icon">' + w.icon + '</td>' +
+          '<td class="fc-c-temp">' + t + '℃</td>' +
+          '<td class="fc-c-prob">' + p + '%</td>' +
+        '</tr>';
       count++;
     }
-    row.innerHTML = html || '<div class="fc-empty">予報データなし</div>';
+
+    row.innerHTML = rowsHtml
+      ? '<table class="fc-row-tbl" cellspacing="0" cellpadding="0">' + rowsHtml + '</table>'
+      : '<div class="fc-empty">予報データなし</div>';
   }
 
   // ============================================================
@@ -204,35 +216,16 @@
       var timeEl  = byId('amesh-time');
       if (errEl) errEl.style.display = 'none';
       if (meshImg && data.meshUrl) {
-        meshImg.onload = function () {
-          meshImg.style.display = 'block';
-        };
+        meshImg.onload = function () { meshImg.style.display = 'block'; };
         meshImg.src = data.meshUrl;
       }
       if (timeEl && data.timeLabel) {
-        timeEl.textContent = '東京アメッシュ (' + data.timeLabel + ' 観測)';
+        timeEl.textContent = 'アメッシュ (' + data.timeLabel + ')';
       }
     }, function () {
       var timeEl = byId('amesh-time');
-      if (timeEl) timeEl.textContent = '東京アメッシュ 取得エラー';
+      if (timeEl) timeEl.textContent = 'アメッシュ取得エラー';
       if (errEl) errEl.style.display = 'block';
-    });
-  }
-
-  // ============================================================
-  // 設定読み込み（地点名・アメッシュピン座標）
-  // ============================================================
-  function fetchConfig() {
-    getJson('/api/config', function (cfg) {
-      var pin = byId('amesh-pin');
-      var lbl = byId('amesh-pin-label');
-      if (pin) {
-        if (typeof cfg.ameshPinX === 'number') pin.style.left = cfg.ameshPinX + '%';
-        if (typeof cfg.ameshPinY === 'number') pin.style.top  = cfg.ameshPinY + '%';
-      }
-      if (lbl && cfg.locationLabel) {
-        lbl.textContent = '● ' + cfg.locationLabel;
-      }
     });
   }
 
@@ -293,40 +286,38 @@
         if (upcoming.length >= 3) break;
       }
 
-      var rowsHtml = '';
+      var bodyHtml = '';
       if (upcoming.length === 0) {
-        rowsHtml = '<div class="dep-placeholder">本日の案内終了 / データなし</div>';
+        bodyHtml = '<div class="dep-placeholder">本日の案内終了 / データなし</div>';
       } else {
+        var rows = '';
         for (var k = 0; k < upcoming.length; k++) {
           var item = upcoming[k];
           var isFirst = (k === 0);
           var minText = '';
-          var soonCls = '';
           if (item.diff !== null) {
             minText = item.diff === 0 ? 'まもなく' : ('あと' + item.diff + '分');
-            if (item.diff <= 4) soonCls = ' soon';
           }
-          rowsHtml +=
-            '<div class="dep-row' + (isFirst ? ' dep-first' : '') + '">' +
-              '<div class="dep-left">' +
-                '<span class="dep-time">' + item.depTime + '</span>' +
-                (minText ? '<span class="dep-min' + soonCls + '">' + minText + '</span>' : '') +
-              '</div>' +
-              '<div class="dep-right">' +
-                '<div class="dep-dest">' + (item.lineText || '') + '</div>' +
-                '<div class="dep-arr">' + item.arrTime + '着' + (item.duration ? ' (' + item.duration + ')' : '') + '</div>' +
-              '</div>' +
-            '</div>';
+          rows +=
+            '<tr class="' + (isFirst ? 'dep-row-first' : 'dep-row-sub') + '">' +
+              '<td class="dep-c-time">' + item.depTime + '</td>' +
+              '<td class="dep-c-min">' + (minText ? '<span class="min-badge">' + minText + '</span>' : '') + '</td>' +
+              '<td class="dep-c-dest">' +
+                (item.lineText || '') +
+                '<span class="dep-arr">' + item.arrTime + '着' + (item.duration ? ' (' + item.duration + ')' : '') + '</span>' +
+              '</td>' +
+            '</tr>';
         }
+        bodyHtml = '<table class="dep-list-tbl" cellspacing="0" cellpadding="0">' + rows + '</table>';
       }
 
       html +=
-        '<div class="dep-card" style="border-left-color:' + route.color + ';">' +
-          '<div class="dep-card-head">' +
-            '<span class="dep-title">' + route.title + '</span>' +
-            '<span class="dep-line">' + route.line + '</span>' +
-          '</div>' +
-          rowsHtml +
+        '<div class="dep-card">' +
+          '<table class="dep-head-tbl" cellspacing="0" cellpadding="0"><tr>' +
+            '<td class="dep-title">' + route.title + '</td>' +
+            '<td class="dep-line">' + route.line + '</td>' +
+          '</tr></table>' +
+          bodyHtml +
         '</div>';
     }
 
@@ -334,7 +325,7 @@
   }
 
   // ============================================================
-  // 運行情報（有楽町線・大江戸線は常時 / 他は異常時のみ）
+  // 運行情報（主要路線はヘッダー / 異常時は下段に詳細）
   // ============================================================
   function fetchTrains() {
     getJson('/api/trains', function (data) {
@@ -357,17 +348,11 @@
       var txt = l.status ? l.status.text : '不明';
 
       if (l.primary) {
-        primaryHtml +=
-          '<span class="status-pill status-' + lvl + '">' +
-            l.name + ': ' + txt +
-          '</span>';
+        var alertCls = (lvl !== 'normal') ? ' pill-alert' : '';
+        primaryHtml += '<span class="pill' + alertCls + '">' + l.name + ':' + txt + '</span>';
       }
       if (lvl !== 'normal') {
-        issueItems.push({
-          name:   l.name,
-          text:   txt,
-          detail: l.detail || ''
-        });
+        issueItems.push({ name: l.name, text: txt, detail: l.detail || '' });
       }
     }
 
@@ -381,7 +366,7 @@
     if (otherBox && otherBody) {
       if (issueItems.length === 0) {
         otherBox.className = 'other-trains';
-        otherBody.innerHTML = 'その他メトロ・都営 全線平常運転';
+        otherBody.innerHTML = 'メトロ・都営 全線平常運転';
       } else {
         otherBox.className = 'other-trains has-issue';
         var html = '';
@@ -389,7 +374,7 @@
           var it = issueItems[j];
           html +=
             '<div class="issue-line">' +
-              '<span class="issue-name">' + it.name + '（' + it.text + '）</span>' +
+              '<span>【' + it.name + ' ' + it.text + '】</span>' +
               (it.detail ? '<span class="issue-detail">' + it.detail + '</span>' : '') +
             '</div>';
         }
@@ -402,6 +387,7 @@
   // 更新制御
   // ============================================================
   function refreshAll() {
+    fetchConfig();
     updateClock();
     fetchWeather();
     fetchAmesh();
@@ -412,12 +398,8 @@
   function init() {
     var reloadBtn = byId('reload-btn');
     if (reloadBtn) {
-      reloadBtn.onclick = function () {
-        fetchConfig();
-    refreshAll();
-      };
+      reloadBtn.onclick = function () { refreshAll(); };
     }
-
     var mapImg = byId('amesh-map');
     if (mapImg) {
       mapImg.onerror = function () {
@@ -426,12 +408,11 @@
       };
     }
 
-    fetchConfig();
     refreshAll();
 
-    // 時計 & あと〇分の再描画: 15秒ごと
-    setInterval(updateClock, 15 * 1000);
-    // 発車案内 & アメッシュ最新チェック: 1分ごと
+    // 時計 & あと〇分の再描画: 30秒ごと
+    setInterval(updateClock, 30 * 1000);
+    // 発車案内 & アメッシュ: 1分ごと
     setInterval(function () {
       fetchDepartures();
       fetchAmesh();

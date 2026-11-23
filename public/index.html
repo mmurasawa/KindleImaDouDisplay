@@ -2,75 +2,73 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=600, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kindle サイネージ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="dashboard">
+  <div class="page">
 
-    <!-- ヘッダー: 時計 + メイン2路線の運行状況 -->
-    <header class="header">
-      <div class="clock-block">
-        <span class="clock-time" id="clock-time">--:--</span>
-        <span class="clock-date" id="clock-date">--/-- (-)</span>
-      </div>
-      <div class="header-right">
-        <div class="primary-status-list" id="primary-status-list">
-          <span class="status-pill status-unknown">運行情報 読込中...</span>
-        </div>
-        <button class="reload-btn" id="reload-btn" type="button" title="手動更新">更新</button>
-      </div>
-    </header>
+    <!-- 1. ヘッダー: 時計 + 主要路線ステータス -->
+    <table class="header-tbl" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="hdr-left">
+          <span class="clock-time" id="clock-time">--:--</span>
+          <span class="clock-date" id="clock-date">--/--(-)</span>
+        </td>
+        <td class="hdr-right">
+          <span id="primary-status-list">
+            <span class="pill">運行情報...</span>
+          </span>
+          <button class="reload-btn" id="reload-btn" type="button">更新</button>
+        </td>
+      </tr>
+    </table>
 
-    <!-- メイン: 左(雨・アメッシュ) / 右(次発案内・他路線アラート) -->
-    <main class="main">
+    <!-- 2. 今の降水状況バナー -->
+    <div class="rain-banner" id="rain-banner">
+      <span class="rain-state" id="rain-state">読み込み中...</span>
+      <span class="rain-meta" id="rain-meta">--℃ / --mm</span>
+    </div>
 
-      <!-- 左カラム: 今の雨 + 東京アメッシュ -->
-      <section class="panel left-panel">
-        <div class="rain-banner" id="rain-banner">
-          <div class="rain-state" id="rain-state">読み込み中...</div>
-          <div class="rain-meta" id="rain-meta">--℃ / 降水量 --mm</div>
-        </div>
-
-        <div class="amesh-box">
+    <!-- 3. 東京アメッシュ（左） + これからの予報（右） -->
+    <table class="weather-tbl" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="amesh-cell">
           <div class="amesh-stage">
             <img class="amesh-img" id="amesh-map"  src="/api/amesh/map"  alt="">
             <img class="amesh-img" id="amesh-mesh" src="" alt="" style="display:none;">
             <img class="amesh-img" id="amesh-mask" src="/api/amesh/mask" alt="">
             <div class="amesh-pin" id="amesh-pin"></div>
-            <div class="amesh-err" id="amesh-err" style="display:none;">レーダー画像を取得できません（サーバーを再起動してください）</div>
+            <div class="amesh-err" id="amesh-err" style="display:none;">レーダー取得エラー</div>
           </div>
-          <div class="amesh-footer">
+          <div class="amesh-caption">
             <span id="amesh-time">東京アメッシュ 読込中...</span>
-            <span id="amesh-pin-label">● 東京</span>
+            <span class="amesh-loc" id="amesh-pin-label">● 東京</span>
           </div>
-        </div>
-
-        <!-- これからの天気予報（2時間おき 5枠） -->
-        <div class="forecast-box">
-          <div class="forecast-title">これからの予報（2時間ごと）</div>
-          <div class="forecast-row" id="forecast-row">
-            <div class="fc-empty">予報を読み込み中...</div>
+        </td>
+        <td class="forecast-cell">
+          <div class="forecast-title">これからの予報</div>
+          <div id="forecast-row">
+            <div class="fc-empty">読込中...</div>
           </div>
-        </div>
-      </section>
+        </td>
+      </tr>
+    </table>
 
-      <!-- 右カラム: 次発案内 + その他路線運行状況 -->
-      <section class="panel right-panel">
-        <div class="departures-wrap" id="departures-wrap">
-          <div class="dep-card">
-            <div class="dep-placeholder">発車時刻を取得中...</div>
-          </div>
-        </div>
+    <!-- 4. 次の発車案内 -->
+    <div id="departures-wrap">
+      <div class="dep-card">
+        <div class="dep-placeholder">発車時刻を取得中...</div>
+      </div>
+    </div>
 
-        <div class="other-trains" id="other-trains">
-          <span class="other-label">その他 地下鉄:</span>
-          <span class="other-body" id="other-trains-body">読み込み中...</span>
-        </div>
-      </section>
+    <!-- 5. その他地下鉄 運行状況 / 遅延詳細 -->
+    <div class="other-trains" id="other-trains">
+      <span class="other-label">運行詳細:</span>
+      <span class="other-body" id="other-trains-body">読み込み中...</span>
+    </div>
 
-    </main>
   </div>
 
   <script src="app.js"></script>

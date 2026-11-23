@@ -1,6 +1,6 @@
 /* ============================================================
-   Kindle 7th gen サイネージ スタイル（超軽量・高コントラスト版）
-   1024 x 600 固定 / アニメーション・外部フォントなし
+   Kindle 7th gen (E-Ink 白黒・縦 600x800) 専用スタイル
+   白背景 + 純黒文字 + 高コントラスト / 古い WebKit 完全互換
    ============================================================ */
 
 * {
@@ -10,188 +10,124 @@
 }
 
 html, body {
-  width: 1024px;
-  height: 600px;
-  overflow: hidden;
-  background: #000000;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   font-family: "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans CJK JP", sans-serif;
-  line-height: 1.3;
-  -webkit-user-select: none;
-  user-select: none;
+  line-height: 1.25;
+  -webkit-text-size-adjust: 100%;
 }
 
-.dashboard {
-  width: 1024px;
-  height: 600px;
-  padding: 10px 12px;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
+.page {
+  width: 588px;
+  margin: 0 auto;
+  padding: 6px 4px;
 }
 
-/* ============================================================
-   Header (62px)
-   ============================================================ */
-.header {
-  height: 62px;
-  padding: 0 4px 8px 4px;
-  margin-bottom: 10px;
-  border-bottom: 2px solid #2b3446;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
+/* 1. Header */
+.header-tbl {
+  width: 100%;
+  border-bottom: 3px solid #000000;
+  margin-bottom: 7px;
+  padding-bottom: 4px;
 }
 
-.clock-block {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: baseline;
-  align-items: baseline;
+.hdr-left {
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.hdr-right {
+  text-align: right;
+  vertical-align: middle;
 }
 
 .clock-time {
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 1px;
-  margin-right: 14px;
+  color: #000000;
+  letter-spacing: 0;
+  margin-right: 6px;
 }
 
 .clock-date {
-  font-size: 22px;
-  font-weight: 600;
-  color: #94a3b8;
-}
-
-.header-right {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-}
-
-.primary-status-list {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-}
-
-.status-pill {
-  display: inline-block;
   font-size: 16px;
   font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 6px;
-  margin-right: 8px;
-  border: 2px solid transparent;
+  color: #000000;
 }
 
-.status-normal  { background: #0d2b1d; color: #34d399; border-color: #10b981; }
-.status-delay   { background: #382807; color: #fbbf24; border-color: #f59e0b; }
-.status-stopped { background: #3b0d0d; color: #f87171; border-color: #ef4444; }
-.status-partial { background: #381e07; color: #fb923c; border-color: #f97316; }
-.status-check   { background: #381e07; color: #fb923c; border-color: #f97316; }
-.status-unknown { background: #1e293b; color: #94a3b8; border-color: #475569; }
+.pill {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 7px;
+  margin-right: 4px;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+}
+
+.pill-alert {
+  background: #000000;
+  color: #ffffff;
+}
 
 .reload-btn {
-  background: #1e293b;
-  color: #cbd5e1;
-  border: 1px solid #475569;
-  border-radius: 6px;
-  padding: 7px 12px;
-  font-size: 14px;
+  display: inline-block;
+  font-size: 13px;
   font-weight: 700;
+  padding: 3px 8px;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
   cursor: pointer;
 }
 
-/* ============================================================
-   Main (2 Columns)
-   ============================================================ */
-.main {
-  -webkit-flex: 1;
-  flex: 1;
-  display: -webkit-flex;
-  display: flex;
-  min-height: 0;
-}
-
-.panel {
-  background: #101521;
-  border: 1px solid #2b3446;
-  border-radius: 8px;
-  padding: 12px;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-}
-
-/* Left Column: Rain + Amesh */
-.left-panel {
-  width: 424px;
-  margin-right: 12px;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-
+/* 2. Rain Banner */
 .rain-banner {
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #1a2234;
-  border: 2px solid #334155;
-  margin-bottom: 10px;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-
-.rain-banner.is-dry {
-  background: #0c261b;
-  border-color: #10b981;
+  border: 3px solid #000000;
+  padding: 7px 10px;
+  margin-bottom: 7px;
+  background: #ffffff;
+  color: #000000;
 }
 
 .rain-banner.is-raining {
-  background: #0c263b;
-  border-color: #38bdf8;
+  background: #000000;
+  color: #ffffff;
 }
 
 .rain-state {
-  font-size: 24px;
+  display: block;
+  font-size: 22px;
   font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
-
-.rain-banner.is-dry .rain-state     { color: #6ee7b7; }
-.rain-banner.is-raining .rain-state { color: #7dd3fc; }
 
 .rain-meta {
-  font-size: 15px;
-  font-weight: 600;
-  color: #cbd5e1;
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-/* Tokyo Amesh Map Box */
-.amesh-box {
-  margin-bottom: 10px;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
+/* 3. Amesh + Forecast */
+.weather-tbl {
+  width: 100%;
+  margin-bottom: 7px;
+  table-layout: fixed;
+}
+
+.amesh-cell {
+  width: 344px;
+  vertical-align: top;
+  padding-right: 8px;
 }
 
 .amesh-stage {
   position: relative;
-  width: 398px;
-  height: 222px;
-  background: #0b1120;
-  border: 1px solid #334155;
-  border-radius: 6px;
+  width: 336px;
+  height: 209px;
+  border: 2px solid #000000;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -202,9 +138,10 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
+  -webkit-filter: grayscale(100%) contrast(135%);
+  filter: grayscale(100%) contrast(135%);
 }
 
-/* 対象地点の位置マーカー (東京アメッシュ広域000上・JSから座標を反映) */
 .amesh-pin {
   position: absolute;
   left: 62%;
@@ -214,8 +151,8 @@ html, body {
   margin-left: -6px;
   margin-top: -6px;
   border-radius: 50%;
-  background: #ef4444;
-  border: 2px solid #ffffff;
+  background: #000000;
+  border: 3px solid #ffffff;
 }
 
 .amesh-err {
@@ -224,284 +161,188 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fbbf24;
+  background: #ffffff;
+  color: #000000;
   font-size: 14px;
   font-weight: 700;
-  padding: 20px;
   text-align: center;
-  line-height: 1.6;
   padding-top: 85px;
 }
 
-.amesh-footer {
-  margin-top: 5px;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
+.amesh-caption {
   font-size: 12px;
-  color: #94a3b8;
+  font-weight: 700;
+  margin-top: 3px;
 }
 
-/* Forecast Box */
-.forecast-box {
-  -webkit-flex: 1;
-  flex: 1;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-justify-content: flex-end;
-  justify-content: flex-end;
+.amesh-loc {
+  float: right;
+}
+
+/* Forecast (Right of Amesh) */
+.forecast-cell {
+  vertical-align: top;
+  border: 2px solid #000000;
+  padding: 5px 7px;
+  background: #ffffff;
 }
 
 .forecast-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #94a3b8;
-  margin-bottom: 6px;
-}
-
-.forecast-row {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-}
-
-.fc-item {
-  width: 75px;
-  background: #161d2d;
-  border: 1px solid #2e3a52;
-  border-radius: 6px;
-  padding: 6px 2px;
-  text-align: center;
-}
-
-.fc-time {
   font-size: 13px;
   font-weight: 700;
-  color: #94a3b8;
-  margin-bottom: 3px;
-}
-
-.fc-icon {
-  font-size: 20px;
-  line-height: 1.1;
-  margin-bottom: 3px;
-}
-
-.fc-temp {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 2px;
-}
-
-.fc-prob {
-  font-size: 13px;
-  font-weight: 700;
-  color: #38bdf8;
-}
-
-.fc-empty {
-  width: 100%;
-  text-align: center;
-  color: #94a3b8;
-  font-size: 13px;
-  padding: 14px 0;
-}
-
-/* ============================================================
-   Right Column: Departures + Other Trains
-   ============================================================ */
-.right-panel {
-  -webkit-flex: 1;
-  flex: 1;
-  min-width: 0;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-}
-
-.departures-wrap {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-}
-
-.dep-card {
-  background: #161d2d;
-  border: 1px solid #2e3a52;
-  border-left-width: 6px;
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-}
-
-.dep-card-head {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  -webkit-align-items: baseline;
-  align-items: baseline;
-  margin-bottom: 8px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #2a3448;
-}
-
-.dep-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.dep-line {
-  font-size: 14px;
-  font-weight: 600;
-  color: #94a3b8;
-}
-
-.dep-row {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  padding: 5px 8px;
-  border-radius: 6px;
+  border-bottom: 2px solid #000000;
+  padding-bottom: 3px;
   margin-bottom: 4px;
 }
 
-.dep-row:last-child {
-  margin-bottom: 0;
+.fc-row-tbl {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.dep-row.dep-first {
-  background: #1e2d44;
-  border: 1px solid #38bdf8;
-}
-
-.dep-left {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-}
-
-.dep-time {
-  font-size: 28px;
+.fc-row-tbl td {
+  padding: 5px 2px;
+  border-bottom: 1px solid #999999;
+  font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
-  width: 88px;
 }
 
-.dep-row:not(.dep-first) .dep-time {
-  font-size: 21px;
-  color: #cbd5e1;
+.fc-row-tbl tr:last-child td {
+  border-bottom: none;
 }
 
-.dep-min {
+.fc-c-time { width: 42px; }
+.fc-c-icon { width: 44px; text-align: center; }
+.fc-c-temp { width: 46px; text-align: right; }
+.fc-c-prob { text-align: right; }
+
+.fc-empty {
+  text-align: center;
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+/* 4. Departures */
+.dep-card {
+  border: 2px solid #000000;
+  border-left: 7px solid #000000;
+  padding: 6px 8px;
+  margin-bottom: 7px;
+  background: #ffffff;
+}
+
+.dep-head-tbl {
+  width: 100%;
+  border-bottom: 2px solid #000000;
+  margin-bottom: 4px;
+  padding-bottom: 2px;
+}
+
+.dep-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.dep-line {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.dep-list-tbl {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dep-list-tbl tr {
+  border-bottom: 1px solid #999999;
+}
+
+.dep-list-tbl tr:last-child {
+  border-bottom: none;
+}
+
+.dep-list-tbl td {
+  padding: 4px 3px;
+  vertical-align: middle;
+}
+
+.dep-c-time {
+  width: 78px;
+  font-size: 22px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dep-row-sub .dep-c-time {
+  font-size: 18px;
+}
+
+.dep-c-min {
+  width: 82px;
+  white-space: nowrap;
+}
+
+.min-badge {
   display: inline-block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 5px;
-  background: #0c4a6e;
-  color: #7dd3fc;
-  min-width: 78px;
+  padding: 2px 6px;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  min-width: 70px;
   text-align: center;
 }
 
-.dep-min.soon {
-  background: #78350f;
-  color: #fde047;
+.dep-row-first .min-badge {
+  background: #000000;
+  color: #ffffff;
 }
 
-.dep-right {
+.dep-c-dest {
   text-align: right;
-  overflow: hidden;
-}
-
-.dep-dest {
-  font-size: 15px;
-  font-weight: 600;
-  color: #e2e8f0;
-  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .dep-arr {
-  font-size: 13px;
-  color: #94a3b8;
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .dep-placeholder {
-  padding: 16px;
   text-align: center;
-  font-size: 15px;
-  color: #94a3b8;
+  padding: 12px;
+  font-size: 14px;
 }
 
-/* Other Metro / Toei Status Bar */
+/* 5. Other Trains / Delay Detail */
 .other-trains {
-  background: #161d2d;
-  border: 1px solid #2e3a52;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 14px;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: flex-start;
-  align-items: flex-start;
-  overflow: hidden;
+  border: 2px solid #000000;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #000000;
 }
 
 .other-trains.has-issue {
-  background: #331907;
-  border-color: #f59e0b;
+  background: #000000;
+  color: #ffffff;
 }
 
 .other-label {
-  font-weight: 700;
-  color: #94a3b8;
-  margin-right: 10px;
-  white-space: nowrap;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-
-.other-body {
-  font-weight: 700;
-  color: #34d399;
-  -webkit-flex: 1;
-  flex: 1;
-  min-width: 0;
-}
-
-.other-trains.has-issue .other-body {
-  color: #fde047;
-}
-
-.issue-line {
-  margin-bottom: 3px;
-  line-height: 1.35;
-}
-
-.issue-line:last-child {
-  margin-bottom: 0;
-}
-
-.issue-name {
-  color: #fde047;
-  font-weight: 700;
   margin-right: 6px;
 }
 
+.issue-line {
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
 .issue-detail {
-  color: #fef3c7;
   font-weight: 400;
-  font-size: 13px;
+  margin-left: 4px;
 }
